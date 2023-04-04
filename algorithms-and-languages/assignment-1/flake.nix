@@ -15,4 +15,4 @@
         default = self.packages.${system}.as1Parser;
       };
     };
-  }
+}
