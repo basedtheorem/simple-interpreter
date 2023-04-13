@@ -18,7 +18,6 @@ type
 
 func matchToken(token: string): Token =
   if token == "": return (tokenType: "", value: "")
-
   const TOKENPATTERNS = [ # evaluated at compile time
     ("literal", "\\\"[[:ascii:]]*\\\""),
     ("append", "append"),
@@ -30,47 +29,75 @@ func matchToken(token: string): Token =
     ("printwordcount", "rintwordcount"),
     ("reverse", "reverse"),
     ("set", "set"),
-    ("constant", "\\s"),
+    ("constant", "SPACE|TAB|NEWLINE"),
     ("end", ";"),
     ("plus", "\\+"),
-    ("id", "[a-zA-Z]+[a-zA-Z0-9_]*"),
+    ("id", "[a-zA-Z][a-zA-Z0-9_]*"),
   ]
   for tokenType in TOKENPATTERNS:
     if match(token, re(tokenType[1])):
       return (tokentype[0], token)
 
-proc pushTokens(q: Deque[Token], str: string): Deque[Token] =
+
+
+
+#  Lexical layer  #
+# --------------- #
+
+func scanTokens(q: Deque[Token], str: string): Deque[Token] =
+  # Copies the queue and appends tokens to it.
+  # If invalid token is detected, the current input line
+  #   is discarded but the previous queue (lines) is retained.
   result = q
-  for token, _ in str.tokenize(): # 'tokenize' returns: [string, isSeparator]
+  for token, isSep in str.tokenize():
+    if isSep: continue
     if matchToken(token).tokenType == "":
       raise newException(ValueError, "Invalid token: \"" & token & "\"")
     else:
       result.addLast(matchToken(token))
-    
-proc inputHandler() =
+
+# --------------- #
+
+
+
+
+#  Syntax layer  #
+# -------------- #
+
+func parseLine(q: Deque[Token], str: string): Deque[Token] =
+  discard
+
+#[
+  curr state:
+    queue where each elem. is a valid token
+
+  what do i want to do here?
+  
+  steps:
+    1. get token one by one
+    2. p
+
+]#
+
+
+# --------------- #
+
+
+
+proc handleInput() =
   var q = initDeque[Token](10)
   while true:
     let userInput: string = readLine(stdin)
-    if userInput == "":
-      continue
-
+    if userInput == "": continue
     try:
-      q = pushTokens(q, userInput)
+      q = scanTokens(q, userInput)
     except ValueError:
-      echo getCurrentExceptionMsg()
-      echo "Try again."
+      echo getCurrentExceptionMsg() & "\nTry again.\n"
       continue
 
-    echo q
+    parseTokens(q)
 
 
 
-inputHandler()
 
-
-#[
-  ok
-
-  so the plan is to continuously read input right
-  ill need to break them by statements
-]#
+handleInput()
