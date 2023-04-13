@@ -1,4 +1,4 @@
-import re, tokenize
+import re, tokenize, deques
 
 echo """
 ----------------------------------------
@@ -39,24 +39,38 @@ func matchToken(token: string): Token =
     if match(token, re(tokenType[1])):
       return (tokentype[0], token)
 
-proc getTokens(str: string): seq[Token] =
-  for token in str.tokenize(): # 'tokenize' returns: [string, isSeparator]
-    if matchToken(token[0]).tokenType == "":
-      raise newException(ValueError, "Invalid token: \"" & token[0] & "\"")
+proc pushTokens(q: Deque[Token], str: string): Deque[Token] =
+  result = q
+  for token, _ in str.tokenize(): # 'tokenize' returns: [string, isSeparator]
+    if matchToken(token).tokenType == "":
+      raise newException(ValueError, "Invalid token: \"" & token & "\"")
     else:
-      result.add(matchToken(token[0]))
+      result.addLast(matchToken(token))
     
-proc handleInput() =
-  let userIn: string = readLine(stdin)
-  var tokens: seq[Token]
-  try:
-    tokens = getTokens(userIn)
-    if tokens.len == 0: return # ignore empty imput
-  except ValueError:
-    echo getCurrentExceptionMsg()
-    echo "Try again."
-    return
-  echo tokens
+proc inputHandler() =
+  var q = initDeque[Token](10)
+  while true:
+    let userInput: string = readLine(stdin)
+    if userInput == "":
+      continue
 
-while true:
-  handleInput()
+    try:
+      q = pushTokens(q, userInput)
+    except ValueError:
+      echo getCurrentExceptionMsg()
+      echo "Try again."
+      continue
+
+    echo q
+
+
+
+inputHandler()
+
+
+#[
+  ok
+
+  so the plan is to continuously read input right
+  ill need to break them by statements
+]#
