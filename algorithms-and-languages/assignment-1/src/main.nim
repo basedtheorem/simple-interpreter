@@ -1,4 +1,6 @@
-import re, tokenize, deques
+{.experimental: "strictFuncs".} # functions must be pure
+import re, tokenize, deques, sequtils
+
 
 echo """
 ----------------------------------------
@@ -6,19 +8,27 @@ echo """
  Submitted by Laurens Morales, 21011877
 ----------------------------------------
 
-
 """
+
+
+
+
 type
   Token = tuple
     tokenType: string
     value: string
 
 
+type
+  Node = object
 
 
-func matchToken(token: string): Token =
-  if token == "": return (tokenType: "", value: "")
-  const TOKENPATTERNS = [ # evaluated at compile time
+
+
+
+func matchToken(tokenStr: string): Token =
+  if tokenStr == "": return (tokenType: "", value: "")
+  const TOKENPATTERNS = [ # const is evaluated at compile time
     ("literal", "\\\"[[:ascii:]]*\\\""),
     ("append", "append"),
     ("exit", "exit"),
@@ -34,9 +44,21 @@ func matchToken(token: string): Token =
     ("plus", "\\+"),
     ("id", "[a-zA-Z][a-zA-Z0-9_]*"),
   ]
+  var matchedBounds: (int, int)
+  var matched: bool
+
   for tokenType in TOKENPATTERNS:
-    if match(token, re(tokenType[1])):
-      return (tokentype[0], token)
+    matchedBounds = findBounds(tokenStr, re(tokenType[1]))
+
+    if matchedBounds[0] == -1:
+          matched = false
+    else: matched = true
+
+    if matched:
+      if (matchedBounds[1] + 1) == len(tokenStr):
+        return (tokentype[0], tokenStr)
+      # part of token not matched
+      raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
 
 
 
@@ -44,17 +66,15 @@ func matchToken(token: string): Token =
 #  Lexical layer  #
 # --------------- #
 
-func scanTokens(q: Deque[Token], str: string): Deque[Token] =
-  # Copies the queue and appends tokens to it.
-  # If invalid token is detected, the current input line
-  #   is discarded but the previous queue (lines) is retained.
-  result = q
-  for token, isSep in str.tokenize():
-    if isSep: continue
-    if matchToken(token).tokenType == "":
-      raise newException(ValueError, "Invalid token: \"" & token & "\"")
-    else:
-      result.addLast(matchToken(token))
+func scanTokens(str: string): seq[Token] =
+  # Appends tokens, and returns a copy
+  var token: Token
+  for tokenStr, isSep in str.tokenize():
+    token = matchToken(tokenStr)
+    if not isSep and token.tokenType == "":
+      raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
+    elif not isSep:
+      result.add(token)
 
 # --------------- #
 
@@ -64,40 +84,42 @@ func scanTokens(q: Deque[Token], str: string): Deque[Token] =
 #  Syntax layer  #
 # -------------- #
 
-func parseLine(q: Deque[Token], str: string): Deque[Token] =
+func getStatements(tokens: seq[Token]): (Deque[Deque[Token]],
+                                         Deque[Token]) =
+  var statements = initDeque[Deque[Token]](10)
+  var leftover = initDeque[Token](10)
+
+  for token in tokens:
+    leftover.addLast(token)
+    if token.tokenType == "end":
+      statements.addLast(leftover)
+
+  return (statements, leftover)
+
+
+
+
+proc parseStatement(statement: Deque[Token]) =
   discard
-
-#[
-  curr state:
-    queue where each elem. is a valid token
-
-  what do i want to do here?
-  
-  steps:
-    1. get token one by one
-    2. p
-
-]#
-
 
 # --------------- #
 
-
-
-proc handleInput() =
+when isMainModule:
   var q = initDeque[Token](10)
   while true:
-    let userInput: string = readLine(stdin)
-    if userInput == "": continue
+    let line: string = readLine(stdin)
+    if line == "": continue
+
     try:
-      q = scanTokens(q, userInput)
-    except ValueError:
+      let tokens: seq[Token] = scanTokens(line)
+      var (statements, leftover) = getStatements(tokens)
+
+      while statements.len() != 0:
+        statements.popFirst().parseStatement()
+      
+      q = leftover
+      echo q
+      echo statements
+    except ValueError:        
       echo getCurrentExceptionMsg() & "\nTry again.\n"
-      continue
-
-    parseTokens(q)
-
-
-
-
-handleInput()
+      q = initDeque[Token](10)
