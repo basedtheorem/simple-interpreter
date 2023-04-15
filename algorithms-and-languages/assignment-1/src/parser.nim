@@ -85,7 +85,8 @@ func parseExpression(tokens: var Deque[Token]): Value =
 
 func parseStatement(tokens: Deque[Token]): Node =
   var tokens = tokens
-  let cmd: string = tokens.popFirst().kind
+  let token = tokens.popFirst()
+  let cmd: string = token.kind
 
   case cmd
     of "assign":
@@ -93,14 +94,14 @@ func parseStatement(tokens: Deque[Token]): Node =
       let id = consumeToken(tokens, "id").value
       let idNode = Value(kind: identifier, varName: id)
       let exp = parseExpression(tokens)
-      result = Assign(command: cmd, id: idNode, exp: exp)
+      result = Assign(command: token.value, id: idNode, exp: exp)
     of "key":
       # (list | exit)
-      result = Key(command: cmd)
+      result = Key(command: token.value)
     of "out":
       # print[ |length|words|wordcound] expression
       let exp = parseExpression(tokens)
-      result = Output(command: cmd, exp: exp)
+      result = Output(command: token.value, exp: exp)
     of "reverse":
       # reverse id
       let id = consumeToken(tokens, "id").value
