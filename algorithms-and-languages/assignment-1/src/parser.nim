@@ -48,8 +48,8 @@ func consumeToken(tokens: var Deque[Token],
   if tokens.peekFirst().kind == expected:
     return tokens.popFirst()
   raise newException(ValueError,
-                    "Syntax Error: expected \"" & $expected &
-                    "\"but instead received \"" & $tokens.peekFirst()
+                    "Syntax Error: expected token of type: \"" & $expected &
+                    "\"but instead received: \"" & $tokens.peekFirst()
                                                          .kind & "\"")
 
 
@@ -65,21 +65,18 @@ func parseValue(token: Token): Value =
       return Value(kind: identifier, varName: val)
     of "literal":
       return Value(kind: literal, str: val)
-  raise newException(ValueError, "Syntax Error: expected a value type" &
-                                 "but instead received: " & knd)
+  raise newException(ValueError, "Syntax Error: expected token of type: \"value" &
+                                 "\" but instead received: \"" & knd & "\"")
 
 
 
 
 func parseExpression(tokens: var Deque[Token]): Value =
   let left = parseValue(tokens.popFirst())
-
   if tokens.peekFirst().kind == "plus":
     discard tokens.popFirst()
-    let right = tokens.popFirst()
     return Plus(left: left,
-               right: parseValue(right))
-
+               right: parseExpression(tokens))
   return left
 
 
@@ -110,7 +107,7 @@ func parseStatement(tokens: Deque[Token]): Node =
       result = Reverse(id: Value(kind: identifier, varName: id))
     else:
       raise newException(ValueError,
-                         "Syntax Error: invalid command \"" & cmd & "\"")
+                         "Syntax Error: invalid command: \"" & cmd & "\"")
   # Check for 'end' token last
   discard consumeToken(tokens, "end")
 
