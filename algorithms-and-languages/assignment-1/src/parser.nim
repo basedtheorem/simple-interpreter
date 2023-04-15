@@ -47,8 +47,10 @@ func consumeToken(tokens: var Deque[Token],
                 expected: string): Token =
   if tokens.peekFirst().kind == expected:
     return tokens.popFirst()
-  raise newException(ValueError, "Syntax Error: expected " & $expected &
-                                 "but received " & $tokens.peekFirst().kind)
+  raise newException(ValueError,
+                    "Syntax Error: expected \"" & $expected &
+                    "\"but instead received \"" & $tokens.peekFirst()
+                                                         .kind & "\"")
 
 
 
@@ -84,7 +86,7 @@ func parseExpression(tokens: var Deque[Token]): Value =
 
 
 func parseStatement(tokens: Deque[Token]): Node =
-  var tokens = tokens
+  var tokens = tokens # Mutable object
   let token = tokens.popFirst()
   let cmd: string = token.kind
 

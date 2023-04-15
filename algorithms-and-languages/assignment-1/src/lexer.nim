@@ -3,9 +3,9 @@ import re, tokenize, deques
 
 
 type
-  Token* = tuple
-    kind: string
-    value: string
+  Token* = ref object
+    kind*: string
+    value*: string
 
 const TokenPatterns = [
   # const is evaluated at compile time
@@ -29,7 +29,7 @@ const TokenPatterns = [
 
 
 func matchToken(tokenStr: string): Token =
-  if tokenStr == "": return (kind: "", value: "")
+  if tokenStr == "": return Token(kind: "", value: "")
 
   var matchedBounds: (int, int)
   var matched: bool
@@ -42,7 +42,7 @@ func matchToken(tokenStr: string): Token =
       matched = true
     if matched:
       if (matchedBounds[1] + 1) == tokenStr.len:
-        return (kind[0], tokenStr)
+        return Token(kind: kind[0], value: tokenStr)
       # part of token not matched
       raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
 
