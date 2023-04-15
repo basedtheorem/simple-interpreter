@@ -5,12 +5,30 @@ import deques
 type
   Node = ref object of RootObj
 
-  Identifier = ref object of Node
-    value: string
 
+type
+  ValueKind = enum
+    identifier,
+    constant,
+    literal
+  
+  Value = ref object of Node
+    case kind: ValueKind
+      of identifier:
+        varName: string
+      of constant:
+        value: string
+      of literal:
+        str: string
+
+  Plus = ref object of Node
+    left, right: Value
+
+
+type
   Assign = ref object of Node
     command: string
-    id: Identifier
+    id: Value
     exp: Node
 
   Key = ref object of Node
@@ -19,9 +37,11 @@ type
   Output = ref object of Node
     command: string
     exp: Node
-
+    
   Reverse = ref object of Node
-    id: Identifier
+    id: Value
+
+
 
 
 proc consumeToken(tokens: var Deque[Token],
@@ -33,15 +53,28 @@ proc consumeToken(tokens: var Deque[Token],
 
 
 
-
-func parseValue(): Node =
-  discard
+proc parseValue(token: Token): Value =
+  let knd: string = token.kind
+  let val: string = token.value
+  case knd
+    of "constant":
+      return Value(kind: constant, value: val)
+    of "id":
+      return Value(kind: identifier, varName: val)
+    of "literal":
+      return Value(kind: literal, str: val)
+  raise newException(ValueError, "Syntax Error: expected a value type" &
+                                 "but instead received: " & knd)
 
 
 
 
 func parseExpression(tokens: var Deque[Token]): Node =
-  
+  let val = parseValue(tokens.popFirst())
+  if tokens.peekFirst().kind == "plus":
+    discard tokens.popFirst()
+    return Plus(left: val,
+               right: parseValue(tokens.popFirst()))
 
 
 
@@ -54,7 +87,7 @@ func parseStatement(tokens: Deque[Token]): Node =
     of "assign":
       # (append | set) id expression
       let id = consumeToken(tokens, "id").value
-      let idNode = Identifier(value: id)
+      let idNode = Value(kind: identifier, varName: id)
       let exp = parseExpression(tokens)
       result = Assign(command: cmd, id: idNode, exp: exp)
     of "key":
@@ -67,11 +100,11 @@ func parseStatement(tokens: Deque[Token]): Node =
     of "reverse":
       # reverse id
       let id = consumeToken(tokens, "id").value
-      result = Reverse(id: Identifier(value: id))
+      result = Reverse(id: Value(kind: identifier, varName: id))
     else:
       raise newException(ValueError,
                          "Syntax Error: invalid command \"" & cmd & "\"")
-
+  # check for 'end' token last
   discard consumeToken(tokens, "end")
 
 
