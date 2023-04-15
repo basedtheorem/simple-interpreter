@@ -35,8 +35,8 @@ proc visitReverse(node: Reverse) =
 
 
 proc visitOutput(node: Output) =
-  let val: string = visitValue(node.exp)
-
+  let val: string = symbolTable[visitValue(node.exp)]
+  
   case node.command
   of "print":
     echo val
