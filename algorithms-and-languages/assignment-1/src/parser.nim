@@ -1,50 +1,49 @@
+{.experimental: "strictFuncs".}
 from lexer import Token
 import deques
 
 
 type
-  Node = ref object of RootObj
-
+  Node* = ref object of RootObj
 
 type
-  ValueKind = enum
-    identifier,
-    constant,
+  ValueKind* = enum
+    identifier
+    constant
     literal
   
-  Value = ref object of Node
-    case kind: ValueKind
-      of identifier:
-        varName: string
-      of constant:
-        value: string
-      of literal:
-        str: string
+  Value* = ref object of Node
+    case kind*: ValueKind
+    of identifier:
+      varName*: string
+    of constant:
+      value*: string
+    of literal:
+      str*: string
 
-  Plus = ref object of Node
+  Plus* = ref object of Value
     left, right: Value
 
-
 type
-  Assign = ref object of Node
-    command: string
-    id: Value
-    exp: Node
+  Assign* = ref object of Node
+    command*: string
+    id*: Value
+    exp*: Value
 
-  Key = ref object of Node
-    command: string
+  Key* = ref object of Node
+    command*: string
 
-  Output = ref object of Node
-    command: string
-    exp: Node
+  Output* = ref object of Node
+    command*: string
+    exp*: Value
     
-  Reverse = ref object of Node
-    id: Value
+  Reverse* = ref object of Node
+    id*: Value
 
 
 
 
-proc consumeToken(tokens: var Deque[Token],
+func consumeToken(tokens: var Deque[Token],
                 expected: string): Token =
   if tokens.peekFirst().kind == expected:
     return tokens.popFirst()
@@ -53,7 +52,8 @@ proc consumeToken(tokens: var Deque[Token],
 
 
 
-proc parseValue(token: Token): Value =
+
+func parseValue(token: Token): Value =
   let knd: string = token.kind
   let val: string = token.value
   case knd
@@ -69,12 +69,16 @@ proc parseValue(token: Token): Value =
 
 
 
-func parseExpression(tokens: var Deque[Token]): Node =
-  let val = parseValue(tokens.popFirst())
+func parseExpression(tokens: var Deque[Token]): Value =
+  let left = parseValue(tokens.popFirst())
+
   if tokens.peekFirst().kind == "plus":
     discard tokens.popFirst()
-    return Plus(left: val,
-               right: parseValue(tokens.popFirst()))
+    let right = tokens.popFirst()
+    return Plus(left: left,
+               right: parseValue(right))
+
+  return left
 
 
 
@@ -104,13 +108,8 @@ func parseStatement(tokens: Deque[Token]): Node =
     else:
       raise newException(ValueError,
                          "Syntax Error: invalid command \"" & cmd & "\"")
-  # check for 'end' token last
+  # Check for 'end' token last
   discard consumeToken(tokens, "end")
-
-
-
-
-    
 
 
 
@@ -118,17 +117,17 @@ func parseStatement(tokens: Deque[Token]): Node =
 func parse*(tokens: Deque[Token]): (Deque[Node], Deque[Token]) =
   var statements = initDeque[Deque[Token]](2)
   var leftover: Deque[Token]
-  var nodes: Deque[Node]
+  var treeNodes: Deque[Node]
 
   for token in tokens:
-    # split input into statements
+    # Split input into statements
     leftover.addLast(token)
     if token.kind == "end":
       statements.addLast(leftover)
       leftover.clear()
 
-  while statements.len() != 0:
+  while statements.len > 0:
     let node = statements.popFirst().parseStatement()
-    nodes.addLast(node)
+    treeNodes.addLast(node)
 
-  return (nodes, leftover)
+  return (treeNodes, leftover)

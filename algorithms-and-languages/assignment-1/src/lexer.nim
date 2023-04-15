@@ -1,4 +1,4 @@
-
+{.experimental: "strictFuncs".}
 import re, tokenize, deques
 
 
@@ -6,7 +6,6 @@ type
   Token* = tuple
     kind: string
     value: string
-
 
 const TokenPatterns = [
   # const is evaluated at compile time
