@@ -1,6 +1,6 @@
 {.experimental: "strictFuncs".} # funcs must be pure
-from lexer import nil    # nil forces dot operator instead of
-from parser import nil   #          importing to global scope
+from lexer import nil     # nil forces dot operator instead of
+from parser import nil    # importing to global scope
 from interpreter import nil
 import deques
 

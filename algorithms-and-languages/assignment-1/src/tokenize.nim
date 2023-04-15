@@ -3,9 +3,10 @@
     https://github.com/nim-lang/Nim/blob/version-1-6/lib/pure/strutils.nim#L2843
 
   Modified such that "..." always counts as one token
-    even if there are whitespaces inside the double quotes.
+  even if there are whitespaces inside the double quotes.
+  
   Also treats semicolons, ";", as one token (as long as
-    it is not inside double quotes).
+  it is not inside double quotes).
   
   '##' indicates that the line is modified by me.
 ]#
@@ -21,14 +22,13 @@ iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
     var isStr = j < s.len and s[j] == '"'                   ## L.M.
     if isStr:                                               ##
       while j < s.len:                                      ##
-        if j == 0 or i == j or (s[j-1] == '\\'): inc(j)     ##
+        if j == 0 or i == j or (s[j-1] == '\\'): inc(j)     ## respects '\' escapes
         elif s[j] == '"':                                   ##
           inc(j)                                            ##
           break                                             ##
         else: inc(j)                                        ##
-    elif j < s.len and s[j] == ';': inc(j)                  ##                           ##                                          ##
     else:                                                   ##
-      while j < s.len and (s[j] in seps) == isSep and
+      while j < s.len and (s[j] in seps) == isSep and       ##
           s[j] != ';':                                      ##
         inc(j)                                              ##
     

@@ -34,17 +34,11 @@ func matchToken(tokenStr: string): Token =
   var matchedBounds: (int, int)
   var matched: bool
 
-  for kind in TokenPatterns:
-    matchedBounds = findBounds(tokenStr, re(kind[1]))
+  for (token, pattern) in TokenPatterns:
+    matchedBounds = findBounds(tokenStr, re(pattern))
     if matchedBounds[0] == -1:
-      matched = false
-    else:
-      matched = true
-    if matched:
       if (matchedBounds[1] + 1) == tokenStr.len:
-        return Token(kind: kind[0], value: tokenStr)
-      # part of token not matched
-      raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
+        return Token(kind: token, value: tokenStr)
 
 
 
@@ -54,7 +48,7 @@ func analyse*(str: string): Deque[Token] =
   var token: Token
   for tokenStr, isSep in str.tokenize():
     token = matchToken(tokenStr)
-    if not isSep and token.kind == "":
+    if isSep: continue # early cont. because whitespace is common
+    if token.kind == "":
       raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
-    elif not isSep:
-      result.addLast(token)
+    result.addLast(token)
