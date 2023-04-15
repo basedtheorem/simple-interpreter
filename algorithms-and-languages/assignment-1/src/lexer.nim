@@ -30,15 +30,14 @@ const TokenPatterns = [
 
 func matchToken(tokenStr: string): Token =
   if tokenStr == "": return Token(kind: "", value: "")
-
   var matchedBounds: (int, int)
-  var matched: bool
 
   for (token, pattern) in TokenPatterns:
     matchedBounds = findBounds(tokenStr, re(pattern))
-    if matchedBounds[0] == -1:
-      if (matchedBounds[1] + 1) == tokenStr.len:
-        return Token(kind: token, value: tokenStr)
+    if (matchedBounds[0] == -1) and
+       (matchedBounds[1] + 1) == tokenStr.len:
+      
+      return Token(kind: token, value: tokenStr)
 
 
 
