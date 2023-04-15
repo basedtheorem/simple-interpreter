@@ -20,9 +20,9 @@ const TokenPatterns = [
   ("out", "printwords"),
   ("out", "rintwordcount"),
   ("reverse", "reverse"),
-  ("constant", "SPACE|TAB|NEWLINE"),
   ("end", ";"),
   ("plus", "\\+"),
+  ("constant", "SPACE|TAB|NEWLINE"),
   ("id", "[a-zA-Z][a-zA-Z0-9_]*"),
 ]
 
