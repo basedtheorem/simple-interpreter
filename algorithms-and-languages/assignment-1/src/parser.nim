@@ -69,7 +69,7 @@ proc parseValue(token: Token): Value =
       val = token.value[1 .. (len(token.value) - 2)]
       return Value(kind: literal, str: val)
     
-  raise newException(ValueError, "Syntax Error: expected token of type: \"value" &
+  raise newException(ValueError, "Syntax Error: expected token of type: \"<expression>" &
                                  "\" but instead received: \"" & knd & "\"")
 
 

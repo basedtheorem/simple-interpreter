@@ -33,3 +33,4 @@ while true:
 
   except ValueError:
     echo getCurrentExceptionMsg() & "\nTry again.\n"
+    currentTokens.clear()
