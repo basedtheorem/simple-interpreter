@@ -1,7 +1,6 @@
 {.experimental: "strictFuncs".}
 import deques, parser, tables
-from strutils import tokenize
-
+from std/strutils import tokenize
 
 var symbolTable: Table[string, string]
 
@@ -31,7 +30,6 @@ proc evalExpr(node: Node): string =
   let right = evalExpr(pNode.right)
   if pNode.left.kind == identifier:
     left = symbolTable[left]
-
   return left & right
 
 
@@ -40,13 +38,22 @@ proc evalExpr(node: Node): string =
 proc visitReverse(node: Reverse) =
   let id: string = visitValue(node.id)
   var val:string = symbolTable[id]
+  var newVal: string
+  for str, _ in val.tokenize():
+    # strings are mutable so no copies required
+    newVal = str & newval
+  symbolTable[id] = newVal
+  #[
+  ### reverses every char in string
+  ### (wrong implementation)
+
   var (a, b) = (0, val.len - 1)
   while a < b:
     (val[a], val[b]) = (val[b], val[a])
     inc(a)
     dec(b)
   symbolTable[id] = val
-
+  ]#
 
 
 
@@ -59,7 +66,7 @@ proc visitOutput(node: Output) =
       echo "Length is: ", val.len
     of "printwords":
       echo "Words are:\n"
-      for word, isSep in tokenize(val): # from stdlib
+      for word, isSep in tokenize(val):
         if not isSep: echo word
     of "printwordcount":
       var count = 0
