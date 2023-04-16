@@ -27,6 +27,7 @@ iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
           inc(j)                                            ##
           break                                             ##
         else: inc(j)                                        ##
+    elif  j < s.len and s[j] == ';': inc(j)                 ##
     else:                                                   ##
       while j < s.len and (s[j] in seps) == isSep and       ##
           s[j] != ';':                                      ##
