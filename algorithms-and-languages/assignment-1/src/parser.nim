@@ -55,15 +55,16 @@ func consumeToken(tokens: var Deque[Token],
 
 
 
-func parseValue(token: Token): Value =
+proc parseValue(token: Token): Value =
   let knd: string = token.kind
-  let val: string = token.value
+  var val: string = token.value
   case knd
     of "constant":
       return Value(kind: constant, value: val)
     of "id":
       return Value(kind: identifier, varName: val)
     of "literal":
+      val = token.value[1 .. (len(token.value) - 2)]
       return Value(kind: literal, str: val)
   raise newException(ValueError, "Syntax Error: expected token of type: \"value" &
                                  "\" but instead received: \"" & knd & "\"")

@@ -29,14 +29,13 @@ const TokenPatterns = [
 
 
 func matchToken(tokenStr: string): Token =
-  if tokenStr == "": return Token(kind: "", value: "")
+  result = Token(kind: "", value: "")
+  if tokenStr == "": return result
   var matchedBounds: (int, int)
-
   for (token, pattern) in TokenPatterns:
     matchedBounds = findBounds(tokenStr, re(pattern))
-    if (matchedBounds[0] == -1) and
+    if (matchedBounds[0] != -1) and
        (matchedBounds[1] + 1) == tokenStr.len:
-      
       return Token(kind: token, value: tokenStr)
 
 
@@ -46,8 +45,10 @@ func analyse*(str: string): Deque[Token] =
   # Appends tokens, and returns a copy
   var token: Token
   for tokenStr, isSep in str.tokenize():
-    token = matchToken(tokenStr)
     if isSep: continue # early cont. because whitespace is common
+    token = matchToken(tokenStr)
     if token.kind == "":
       raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
+    {.cast(noSideEffect).}:
+      echo token.kind
     result.addLast(token)
