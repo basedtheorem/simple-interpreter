@@ -56,6 +56,7 @@ proc analyse*(str: string): Deque[Token] =
   # The variable 'result' is implicitly declared & returned.
   var token: Token
   for tokenStr, isSep in str.tokenize():
+    if tokenStr == "": continue # prevents bug where "" becomes a token
 
     if strBuilder.isOn:
       strBuilder.str.add(tokenStr)

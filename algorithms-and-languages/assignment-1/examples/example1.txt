@@ -9,4 +9,5 @@ printlength sentence;
 list;
 reverse	one;
 print   one;
+
 exit;
