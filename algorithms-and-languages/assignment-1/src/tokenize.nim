@@ -20,14 +20,17 @@ iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
     var j = i
     var isSep = j < s.len and s[j] in seps
     var isStr = j < s.len and s[j] == '"'                   ## L.M.
+
     if isStr:                                               ##
       while j < s.len:                                      ##
-        inc(j)                                              ##
-        if s[j] == '"' and not                              ##
-           (j == 0 or i == j or (s[j-1] == '\\')):          ## respects '\' escapes
+        if not (j == 0 or i == j or (s[j-1] == '\\')) and   ## respects '\' escapes
+            s[j] == '"':                                    ##
+          inc(j)                                            ##
           break                                             ##
-    elif  j < s.len and s[j] == ';':                        ##
-      inc(j)                                                ##
+        inc(j)                                              ##
+
+    elif  j < s.len and s[j] == ';': inc(j)                 ##
+    
     else:                                                   ##
       while j < s.len and (s[j] in seps) == isSep and       ##
           s[j] != ';':                                      ##
