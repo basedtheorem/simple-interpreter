@@ -22,7 +22,7 @@ type
         str*: string
 
   Plus* = ref object of Node
-    left*: Node
+    left*: Value
     right*: Node
 
 type
@@ -56,7 +56,7 @@ func consumeToken(tokens: var Deque[Token],
 
 
 
-proc parseValue(token: Token): Node =
+proc parseValue(token: Token): Value =
   let knd: string = token.kind
   var val: string = token.value
   case knd

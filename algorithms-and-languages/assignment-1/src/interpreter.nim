@@ -20,14 +20,19 @@ proc visitValue(node: Value): string =
 
 proc evalExpr(node: Node): string =
   if node of Value:
-    let valNode = Value(node)
+    let valNode = Value(node) # type cast node to Value
     let val = visitValue(valNode)
     if valNode.kind == identifier:
       return symbolTable[val]
     return val
+  # node of Plus:
   let pNode = Plus(node)
-  let (left, right) = (pNode.left, pNode.right)
-  return visitValue(Value(left)) & evalExpr(right)
+  var  left = visitValue(pNode.left)
+  let right = evalExpr(pNode.right)
+  if pNode.left.kind == identifier:
+    left = symbolTable[left]
+
+  return left & right
 
 
 
