@@ -3,8 +3,9 @@ import deques, parser, tables, re
 from std/strutils import tokenize
 
 
-# Symbol table implemented as a hashmap
-var symbolTable: Table[string, string]
+# Symbol table implemented as a hashmap;
+# remembers order of insertion when iterated.
+var symbolTable: OrderedTable[string, string]
 
 
 
@@ -40,19 +41,21 @@ proc evalExpr(node: Node): string =
 
 
 proc visitReverse(node: Reverse) =
-  # Strings are mutable and reversed in place
   let id: string = visitValue(node.id)
   var val: string = symbolTable[id]
-  var newVal: string
-  for str, _ in val.tokenize():
-    newval.add(str)
-  var (left, right) = (0, newval.len)
-  while left < right:
-    (newVal[left], newVal[right]) = (newVal[right], newVal[left])
-    inc(left)
-    dec(right)
+  var newVal = val
+  var i = val.len - 1
+  var j: int
+  for token, _ in val.tokenize():
+    # Strings are mutable and reversed in place
+    j = token.len
+    for char in token:
+      newVal[i - j + 1] = char
+      dec(j)
+    i = i - token.len
   symbolTable[id] = newVal
 
+  
 
 
 
@@ -65,11 +68,11 @@ proc visitOutput(node: Output) =
       echo "Length is: ", val.len
     of "printwords":
       echo "Words:"
-      for word in split(val, sep=re"[^'\w]+"):
+      for word in val.split(re"[^'\w]+"):
         echo word
     of "printwordcount":
-      var count = 0
-      echo "Wordcount is: ", split(val, sep=re"[^'\w]+").len
+      echo "Wordcount is: ", val.split(re"[^'\w]+").len
+      echo val.split(re"[^'\w]+")
 
 
 
