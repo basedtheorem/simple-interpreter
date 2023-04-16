@@ -1,8 +1,12 @@
 {.experimental: "strictFuncs".}
-import deques, parser, tables
+import deques, parser, tables, re
 from std/strutils import tokenize
 
+
+# Symbol table implemented as a hashmap
 var symbolTable: Table[string, string]
+
+
 
 
 proc visitValue(node: Value): string =
@@ -19,7 +23,7 @@ proc visitValue(node: Value): string =
 
 proc evalExpr(node: Node): string =
   if node of Value:
-    let valNode = Value(node) # type cast node to Value
+    let valNode = Value(node) # Type cast Node to Value.
     let val = visitValue(valNode)
     if valNode.kind == identifier:
       return symbolTable[val]
@@ -36,24 +40,19 @@ proc evalExpr(node: Node): string =
 
 
 proc visitReverse(node: Reverse) =
+  # Strings are mutable and reversed in place
   let id: string = visitValue(node.id)
-  var val:string = symbolTable[id]
+  var val: string = symbolTable[id]
   var newVal: string
   for str, _ in val.tokenize():
-    # strings are mutable so no copies required
-    newVal = str & newval
+    newval.add(str)
+  var (left, right) = (0, newval.len)
+  while left < right:
+    (newVal[left], newVal[right]) = (newVal[right], newVal[left])
+    inc(left)
+    dec(right)
   symbolTable[id] = newVal
-  #[
-  ### reverses every char in string
-  ### (wrong implementation)
 
-  var (a, b) = (0, val.len - 1)
-  while a < b:
-    (val[a], val[b]) = (val[b], val[a])
-    inc(a)
-    dec(b)
-  symbolTable[id] = val
-  ]#
 
 
 
@@ -65,13 +64,12 @@ proc visitOutput(node: Output) =
     of "printlength":
       echo "Length is: ", val.len
     of "printwords":
-      echo "Words are:\n"
-      for word, isSep in tokenize(val):
-        if not isSep: echo word
+      echo "Words:"
+      for word in split(val, sep=re"[^'\w]+"):
+        echo word
     of "printwordcount":
       var count = 0
-      for _ in tokenize(val): inc(count)
-      echo "Wordcount is: ", count
+      echo "Wordcount is: ", split(val, sep=re"[^'\w]+").len
 
 
 

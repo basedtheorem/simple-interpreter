@@ -1,6 +1,6 @@
 #[
   Original code obtained from the standard library; strutils/tokenize:
-    https://github.com/nim-lang/Nim/blob/version-1-6/lib/pure/strutils.nim#L2843
+  https://github.com/nim-lang/Nim/blob/version-1-6/lib/pure/strutils.nim#L2843
 
   Modified such that "..." always counts as one token
   even if there are whitespaces inside the double quotes.
@@ -20,7 +20,6 @@ iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
     var j = i
     var isSep = j < s.len and s[j] in seps
     var isStr = j < s.len and s[j] == '"'                   ## L.M.
-
     if isStr:                                               ##
       while j < s.len:                                      ##
         if not (j == 0 or i == j or (s[j-1] == '\\')) and   ## respects '\' escapes

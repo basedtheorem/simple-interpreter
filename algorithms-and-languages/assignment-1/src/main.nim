@@ -1,9 +1,9 @@
-{.experimental: "strictFuncs".} # funcs must be pure
-from lexer import nil     # nil forces dot operator instead of
-from parser import nil    # importing to global scope
-from interpreter import nil
-import deques
+{.experimental: "strictFuncs".} # Force funcs to be pure.
 
+from lexer import nil           # 'import nil' forces dot
+from parser import nil          # operator instead of
+from interpreter import nil     # importing to global scope.
+import deques
 
 echo """
 ----------------------------------------
@@ -24,13 +24,19 @@ while true:
     for token in newTokens:
       currentTokens.addLast(token)
 
+
     # - Parser - #
     var (node, leftover) = parser.parse(currentTokens)
+    # Leftover tokens are queued into next iteration.
     currentTokens = leftover
+
 
     # - Interpreter - #
     interpreter.interpret(node)
 
+
   except ValueError:
     echo getCurrentExceptionMsg() & "\nTry again.\n"
+    # Errors will most likely occur in the lexer or parser,
+    # so all tokens must be removed from the queue.
     currentTokens.clear()
