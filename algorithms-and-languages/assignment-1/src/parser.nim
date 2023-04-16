@@ -14,28 +14,29 @@ type
   
   Value* = ref object of Node
     case kind*: ValueKind
-    of identifier:
-      varName*: string
-    of constant:
-      value*: string
-    of literal:
-      str*: string
+      of identifier:
+        varName*: string
+      of constant:
+        value*: string
+      of literal:
+        str*: string
 
-  Plus* = ref object of Value
-    left, right: Value
+  Plus* = ref object of Node
+    left*: Node
+    right*: Node
 
 type
   Assign* = ref object of Node
     command*: string
     id*: Value
-    exp*: Value
+    exp*: Node
 
   Key* = ref object of Node
     command*: string
 
   Output* = ref object of Node
     command*: string
-    exp*: Value
+    exp*: Node
     
   Reverse* = ref object of Node
     id*: Value
@@ -55,7 +56,7 @@ func consumeToken(tokens: var Deque[Token],
 
 
 
-proc parseValue(token: Token): Value =
+proc parseValue(token: Token): Node =
   let knd: string = token.kind
   var val: string = token.value
   case knd
@@ -64,15 +65,17 @@ proc parseValue(token: Token): Value =
     of "id":
       return Value(kind: identifier, varName: val)
     of "literal":
+      # Remove double quotes from start & end
       val = token.value[1 .. (len(token.value) - 2)]
       return Value(kind: literal, str: val)
+    
   raise newException(ValueError, "Syntax Error: expected token of type: \"value" &
                                  "\" but instead received: \"" & knd & "\"")
 
 
 
 
-func parseExpression(tokens: var Deque[Token]): Value =
+func parseExpression(tokens: var Deque[Token]): Node =
   let left = parseValue(tokens.popFirst())
   if tokens.peekFirst().kind == "plus":
     discard tokens.popFirst()
@@ -108,12 +111,12 @@ func parseStatement(tokens: Deque[Token]): Node =
       result = Reverse(id: Value(kind: identifier, varName: id))
     else:
       raise newException(ValueError,
-                         "Syntax Error: invalid command: \"" & cmd & "\"")
+                          "Syntax Error: invalid command: \"" & cmd & "\"")
   # Check for 'end' token last
   discard consumeToken(tokens, "end")
 
 
-
+  
 
 func parse*(tokens: Deque[Token]): (Deque[Node], Deque[Token]) =
   var statements = initDeque[Deque[Token]](2)
