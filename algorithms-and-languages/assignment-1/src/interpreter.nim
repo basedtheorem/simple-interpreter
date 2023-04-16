@@ -45,6 +45,7 @@ proc visitReverse(node: Reverse) =
     (val[a], val[b]) = (val[b], val[a])
     inc(a)
     dec(b)
+  symbolTable[id] = val
 
 
 
