@@ -49,6 +49,4 @@ func analyse*(str: string): Deque[Token] =
     token = matchToken(tokenStr)
     if token.kind == "":
       raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
-    {.cast(noSideEffect).}:
-      echo token.kind
     result.addLast(token)
