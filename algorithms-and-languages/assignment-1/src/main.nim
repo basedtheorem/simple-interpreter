@@ -14,8 +14,9 @@ echo """
 
 var currentTokens = initDeque[lexer.Token]()
 while true:
-  let line = readLine(stdin)
+  var line = readLine(stdin)
   if line == "": continue
+  line.add("\n") # stdin ignores newlines
 
   try:
     # - Lexer - #
