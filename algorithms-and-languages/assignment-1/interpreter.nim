@@ -1,11 +1,12 @@
 {.experimental: "strictFuncs".}
+
 import deques, parser, tables, re
 from std/strutils import tokenize
 from std/sequtils import filter
 
 
-# Symbol table implemented as a hashmap;
-# remembers order of insertion when iterated.
+# Symbol table implemented as a hashmap.
+# Remembers order of insertion when iterated.
 var symbolTable: OrderedTable[string, string]
 
 
@@ -30,7 +31,7 @@ proc evalExpr(node: Node): string =
     if valNode.kind == identifier:
       return symbolTable[val]
     return val
-  # node of Plus:
+  # node is of type Plus:
   let pNode = Plus(node)
   var  left = visitValue(pNode.left)
   let right = evalExpr(pNode.right)
@@ -48,7 +49,7 @@ proc visitReverse(node: Reverse) =
   var i = val.len - 1
   var j: int
   for token, _ in val.tokenize():
-    # Strings are mutable and reversed in place
+    # Strings are mutable and reversed in place.
     j = token.len
     for char in token:
       newVal[i - j + 1] = char
@@ -56,7 +57,7 @@ proc visitReverse(node: Reverse) =
     i = i - token.len
   symbolTable[id] = newVal
 
-  
+
 
 
 proc visitOutput(node: Output) =
@@ -69,15 +70,21 @@ proc visitOutput(node: Output) =
     of "printwords":
       echo "Words:"
       for word in val.split(re"[^'\w]+"):
-        # For some reason, the regexp sometimes
-        # matches an empty string.
         if word != "":
           echo word
     of "printwordcount":
-      echo "Wordcount: ",
-            val.split(re"[^'\w]+")
-               .filter(proc(w: string): bool = w != "")
-               .len()
+      let words = val.split(re"[^'\w]+")
+      var len = val.len()
+
+      # Empty strings can occur at either ends.
+      if words[0] == "":
+        len = len - 1
+      if words.len > 1 and words[^1] == "":
+      # '[^1]' gets last index.
+        len = len - 1
+
+      echo "Wordcount: ", len
+            
 
 
 
@@ -89,10 +96,12 @@ proc visitKey(node: Key) =
       echo id, ": ", val
   else: # == "exit":
     echo "\n==========================================="
-    echo "               Are you sure?               "
+       # This makes it easier to find the exit statement
+       # when pasting in a large set of commands.
+    echo "               Are you sure?               " 
     echo "===========================================\n"
     stdout.flushFile()
-    stdout.write("[y/n]: ") # echo prints line
+    stdout.write("[y/n]: ") # write() keeps user input on same line.
     var input = readLine(stdin)
     while input != "y" and input != "n":
       stdout.write("[y/n]: ")
@@ -127,6 +136,7 @@ proc visitCmd(node: Node) =
 
 
 proc interpret*(treeNodes: var Deque[Node]) =
+  # Interpret all statements
   while treeNodes.len > 0:
     let treeNode = treeNodes.popFirst() 
     visitCmd(treeNode)

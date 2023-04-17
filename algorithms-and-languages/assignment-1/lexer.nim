@@ -1,5 +1,6 @@
 import re, tokenize, deques
 
+
 # '*' means it is exported for other modules.
 type
   Token* = ref object

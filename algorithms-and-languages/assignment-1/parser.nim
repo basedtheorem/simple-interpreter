@@ -1,4 +1,5 @@
 {.experimental: "strictFuncs".}
+
 from lexer import Token
 import deques
 
@@ -112,7 +113,8 @@ func parseStatement(tokens: Deque[Token]): Node =
       result = Reverse(id: Value(kind: identifier, varName: id))
     else:
       raise newException(ValueError,
-                          "Syntax Error: invalid command: \"" & cmd & "\"")
+                        "Syntax Error: invalid command: \"" &
+                         cmd & "\"")
   # Make sure statement ends with ';'.
   discard consumeToken(tokens, "end")
 
