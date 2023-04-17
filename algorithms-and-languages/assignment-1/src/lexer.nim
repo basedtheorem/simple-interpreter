@@ -55,18 +55,21 @@ proc analyse*(str: string): Deque[Token] =
   # Tokenizes string, appends tokens to a queue.
   # The variable 'result' is implicitly declared & returned.
   var token: Token
-  for tokenStr, isSep in str.tokenize():
-    if tokenStr == "": continue # prevents bug where "" becomes a token
-
+  for tokenStr, isSep in str.tokenize():    
     if strBuilder.isOn:
-      strBuilder.str.add(tokenStr)
-      if tokenStr[^1] == '"':
-        strBuilder.isOn = false
+      if tokenStr[0] == '"':
+        strBuilder.str.add('"')
         result.addLast(Token(kind: "literal", value: strBuilder.str))
+        strBuilder.isOn = false
+        strBuilder.str = ""
+        if tokenStr.len > 1:
+          token = matchToken(tokenStr[1..tokenStr.len])
+          result.addLast(token)
+      else:
+        strBuilder.str.add(tokenStr)
 
-    elif tokenStr[0] == '"' and # 'str[^1]' gets last char.
-        (tokenStr[^1] != '"' or tokenStr.len == 1):
-      # '<">' detected, will build a string literal until
+    elif tokenStr[0] == '"': # 'str[^1]' indexes last char.
+      # will build a string literal until
       # an unescaped '<">' is encountered.
       strBuilder.isOn = true
       strBuilder.str.add(tokenStr)

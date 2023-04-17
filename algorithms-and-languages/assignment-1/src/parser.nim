@@ -53,7 +53,7 @@ func consumeToken(tokens: var Deque[Token],
     return tokens.popFirst()
   raise newException(ValueError,
     "Syntax Error: expected token of type: <" & $expected &
-    ">but instead received: \"" & $tokens.peekFirst().kind & "\"")
+    "> but instead received: \"" & $tokens.peekFirst().kind & "\"")
 
 
 

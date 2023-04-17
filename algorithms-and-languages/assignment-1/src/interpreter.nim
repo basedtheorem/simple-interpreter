@@ -1,6 +1,7 @@
 {.experimental: "strictFuncs".}
 import deques, parser, tables, re
 from std/strutils import tokenize
+from std/sequtils import filter
 
 
 # Symbol table implemented as a hashmap;
@@ -58,7 +59,6 @@ proc visitReverse(node: Reverse) =
   
 
 
-
 proc visitOutput(node: Output) =
   let val: string = evalExpr(node.exp)
   case node.command
@@ -69,10 +69,15 @@ proc visitOutput(node: Output) =
     of "printwords":
       echo "Words:"
       for word in val.split(re"[^'\w]+"):
-        echo word
+        # For some reason, the  regexp matches
+        # an empty string if there is a full stop.
+        if word != "":
+          echo word
     of "printwordcount":
-      echo "Wordcount is: ", val.split(re"[^'\w]+").len
-      echo val.split(re"[^'\w]+")
+      echo "Wordcount: ",
+            val.split(re"[^'\w]+")
+               .filter(proc(w: string): bool = w != "")
+               .len()
 
 
 
@@ -82,8 +87,13 @@ proc visitKey(node: Key) =
     echo "Identifier list (", symbolTable.len, "):"
     for id, val in pairs(symbolTable):
       echo id, ": ", val
-  else: # == "end":
-    quit(0)
+  else: # == "exit":
+    stdout.write("Are you sure? [y/n]: ")
+    stdout.flushFile()
+    var input = readLine(stdin)
+    while input != "y" and input != "n":
+      input = readLine(stdin)
+    if input == "y": quit(0)
 
 
 
