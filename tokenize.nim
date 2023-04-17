@@ -25,7 +25,8 @@ iterator tokenize*(s: string, seps: set[char] = Whitespace): tuple[
           if (s[j] != ';') and 
                     ((s[j] != '"') or s[j - 1] == '\\'):
             inc(j)
-          else: break
+          else:
+            break
 
     if j > i:
       yield (substr(s, i, j-1), isSep)

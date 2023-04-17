@@ -2,7 +2,6 @@
 
 import deques, parser, tables, re
 from std/strutils import tokenize
-from std/sequtils import filter
 
 
 # Symbol table implemented as a hashmap.
@@ -106,7 +105,8 @@ proc visitKey(node: Key) =
     while input != "y" and input != "n":
       stdout.write("[y/n]: ")
       input = readLine(stdin)
-    if input == "y": quit(0)
+    if input == "y":
+      quit(0)
 
 
 
