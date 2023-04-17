@@ -19,7 +19,6 @@
 #define nimln_(x, y)
 typedef struct NimStrPayload NimStrPayload;
 typedef struct NimStringV2 NimStringV2;
-typedef struct tyTuple__dPNkpxgceTc63bP5seHZGw tyTuple__dPNkpxgceTc63bP5seHZGw;
 struct NimStrPayload {
 NI cap;
 NIM_CHAR data[SEQ_DECL_SIZE];
@@ -28,16 +27,11 @@ struct NimStringV2 {
 NI len;
 NimStrPayload* p;
 };
-struct tyTuple__dPNkpxgceTc63bP5seHZGw {
-NimStringV2 Field0;
-NIM_BOOL Field1;
-};
 N_NIMCALL(NimStringV2, mnewString)(NI len);
 N_LIB_PRIVATE N_NOINLINE(void, raiseOverflow)(void);
 N_LIB_PRIVATE N_NOINLINE(void, raiseIndexError2)(NI i, NI n);
 static N_INLINE(void, nimPrepareStrMutationV2)(NimStringV2* s);
 N_LIB_PRIVATE N_NIMCALL(void, nimPrepareStrMutationImpl__system_2312)(NimStringV2* s);
-N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___system_2636)(NimStringV2* dest);
 static N_INLINE(void, nimPrepareStrMutationV2)(NimStringV2* s) {
 	{
 		NIM_BOOL T3_;
@@ -83,13 +77,4 @@ N_LIB_PRIVATE N_NIMCALL(NimStringV2, nsuRepeatChar)(NIM_CHAR c, NI count) {
 	}
 	}BeforeRet_: ;
 	return result;
-}
-N_LIB_PRIVATE N_NIMCALL(void, eqsink___pureZstrutils_2406)(tyTuple__dPNkpxgceTc63bP5seHZGw* dest, tyTuple__dPNkpxgceTc63bP5seHZGw src) {
-	if ((*dest).Field0.p != src.Field0.p) {	eqdestroy___system_2636((&(*dest).Field0));
-	}
-(*dest).Field0.len = src.Field0.len; (*dest).Field0.p = src.Field0.p;
-	(*dest).Field1 = src.Field1;
-}
-N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___pureZstrutils_2400)(tyTuple__dPNkpxgceTc63bP5seHZGw* dest) {
-	eqdestroy___system_2636((&(*dest).Field0));
 }

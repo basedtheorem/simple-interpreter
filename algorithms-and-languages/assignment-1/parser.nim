@@ -120,11 +120,13 @@ func parseStatement(tokens: Deque[Token]): Node =
   
 
 func parse*(tokens: Deque[Token]): (Deque[Node], Deque[Token]) =
-  # Takes a queue of tokens and tries to build synctactically
-  # valid statements from them. Will also return leftover tokens
-  # if any.
-  # This allows the user to input multiple statements in one
-  # line, and split a statement into multiple lines.
+  #[
+    Takes a queue of tokens and tries to build synctactically
+    valid statements from them. Will also return leftover tokens
+    if any.
+    This allows the user to input multiple statements in one
+    line, and split a statement into multiple lines.
+  ]#
   var statements = initDeque[Deque[Token]](2)
   var leftover: Deque[Token]
   var treeNodes: Deque[Node]

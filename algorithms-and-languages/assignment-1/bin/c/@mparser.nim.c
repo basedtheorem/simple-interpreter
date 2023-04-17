@@ -216,15 +216,15 @@ static N_INLINE(void, nimSetMem__systemZmemory_7)(void* a, int v, NI size);
 static N_INLINE(NIM_BOOL*, nimErrorFlag)(void);
 N_LIB_PRIVATE N_NIMCALL(void, initDeque__parser_362)(NI initialSize, tyObject_Deque__9cksRWfZtypB9a8wzk62c2VQ* Result);
 N_LIB_PRIVATE N_NOINLINE(void, raiseIndexError2)(NI i, NI n);
-N_LIB_PRIVATE N_NIMCALL(void, addLast__lexer_126)(tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* deq, tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ* item);
-N_LIB_PRIVATE N_NIMCALL(void, eqcopy___lexer_99)(tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ** dest, tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ* src);
+N_LIB_PRIVATE N_NIMCALL(void, addLast__lexer_142)(tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* deq, tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ* item);
+N_LIB_PRIVATE N_NIMCALL(void, eqcopy___lexer_102)(tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ** dest, tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ* src);
 static N_INLINE(NIM_BOOL, eqStrings)(NimStringV2 a, NimStringV2 b);
 static N_INLINE(NIM_BOOL, equalMem__system_1717)(void* a, void* b, NI size);
 static N_INLINE(int, nimCmpMem)(void* a, void* b, NI size);
 N_LIB_PRIVATE N_NIMCALL(void, addLast__parser_516)(tyObject_Deque__9cksRWfZtypB9a8wzk62c2VQ* deq, tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* item);
 N_LIB_PRIVATE N_NIMCALL(void, eqcopy___parser_252)(tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* dest, tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* src);
 static N_INLINE(void, clear__parser_600)(tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* deq);
-N_LIB_PRIVATE N_NIMCALL(void, reset__lexer_219)(tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ** obj);
+N_LIB_PRIVATE N_NIMCALL(void, reset__lexer_235)(tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ** obj);
 N_LIB_PRIVATE N_NOINLINE(void, raiseOverflow)(void);
 static N_INLINE(NI, len__parser_619)(tyObject_Deque__9cksRWfZtypB9a8wzk62c2VQ* deq);
 N_LIB_PRIVATE N_NIMCALL(tyObject_NodecolonObjectType___uSHE7R3NQL3IPwGVv4jGxQ*, parseStatement__parser_228)(tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg* tokens);
@@ -254,7 +254,7 @@ N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___parser_206)(tyObject_PluscolonObjectTy
 static N_INLINE(NIM_BOOL, nimDecRefIsLast)(void* p);
 static N_INLINE(NI, minuspercent___system_716)(NI x, NI y);
 N_LIB_PRIVATE N_NIMCALL(void, nimDestroyAndDispose)(void* p);
-N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___lexer_96)(tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ** dest);
+N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___lexer_99)(tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ** dest);
 N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___parser_141)(tyObject_ValuecolonObjectType___fSb0D7f22nnBFPamsktSXA** dest);
 N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___parser_259)(tyObject_AssigncolonObjectType___dTyelsux6zmAl2l8sVsxZA* dest);
 N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___parser_184)(tyObject_NodecolonObjectType___uSHE7R3NQL3IPwGVv4jGxQ** dest);
@@ -299,9 +299,9 @@ static const struct {
 } TM__jVF9a0kci0U9aAi0LWMoeYpg_21 = { 39 | NIM_STRLIT_FLAG, "Syntax Error: expected token of type: <" };
 static const NimStringV2 TM__jVF9a0kci0U9aAi0LWMoeYpg_22 = {39, (NimStrPayload*)&TM__jVF9a0kci0U9aAi0LWMoeYpg_21};
 static const struct {
-  NI cap; NIM_CHAR data[24+1];
-} TM__jVF9a0kci0U9aAi0LWMoeYpg_25 = { 24 | NIM_STRLIT_FLAG, ">but instead received: \"" };
-static const NimStringV2 TM__jVF9a0kci0U9aAi0LWMoeYpg_26 = {24, (NimStrPayload*)&TM__jVF9a0kci0U9aAi0LWMoeYpg_25};
+  NI cap; NIM_CHAR data[25+1];
+} TM__jVF9a0kci0U9aAi0LWMoeYpg_25 = { 25 | NIM_STRLIT_FLAG, "> but instead received: \"" };
+static const NimStringV2 TM__jVF9a0kci0U9aAi0LWMoeYpg_26 = {25, (NimStrPayload*)&TM__jVF9a0kci0U9aAi0LWMoeYpg_25};
 static const struct {
   NI cap; NIM_CHAR data[1+1];
 } TM__jVF9a0kci0U9aAi0LWMoeYpg_27 = { 1 | NIM_STRLIT_FLAG, "\"" };
@@ -418,7 +418,7 @@ static N_INLINE(void, clear__parser_600)(tyObject_Deque__9burra9aMxNgwnm0VyV6lkz
 					if (i < 0 || i >= (*deq).data.len){ raiseIndexError2(i,(*deq).data.len-1); goto BeforeRet_;
 }
 					el = &(*deq).data.p->data[i];
-					reset__lexer_219(el);
+					reset__lexer_235(el);
 					if (nimAddInt(i, ((NI) 1), &TM__jVF9a0kci0U9aAi0LWMoeYpg_4)) { raiseOverflow(); goto BeforeRet_;
 };
 					i = (NI)((NI)(TM__jVF9a0kci0U9aAi0LWMoeYpg_4) & (*deq).mask);
@@ -550,7 +550,7 @@ NIM_BOOL* nimErr_;
 	T8_ = (tyObject_TokencolonObjectType___1dbzjmzCAypO1Bo6SDN3KQ**)0;
 	T8_ = peekFirst__parser_52(tokens);
 	if (NIM_UNLIKELY(*nimErr_)) goto BeforeRet_;
-	T7_ = rawNewString(expected.len + (*(*T8_)).kind.len + 64);
+	T7_ = rawNewString(expected.len + (*(*T8_)).kind.len + 65);
 appendString((&T7_), TM__jVF9a0kci0U9aAi0LWMoeYpg_22);
 appendString((&T7_), expected);
 appendString((&T7_), TM__jVF9a0kci0U9aAi0LWMoeYpg_26);
@@ -846,15 +846,15 @@ NIM_BOOL* nimErr_;
 		(*T8_).right = parseExpression__parser_150(tokens);
 		if (NIM_UNLIKELY(*nimErr_)) goto LA7_;
 		result = &T8_->Sup;
-		eqdestroy___lexer_96(&colontmpD__2);
-		eqdestroy___lexer_96(&colontmpD_);
+		eqdestroy___lexer_99(&colontmpD__2);
+		eqdestroy___lexer_99(&colontmpD_);
 		eqdestroy___parser_141(&left);
 		goto BeforeRet_;
 		{
 			LA7_:;
 		}
 		{
-			eqdestroy___lexer_96(&colontmpD__2);
+			eqdestroy___lexer_99(&colontmpD__2);
 		}
 		if (NIM_UNLIKELY(*nimErr_)) goto LA1_;
 	}
@@ -862,14 +862,14 @@ NIM_BOOL* nimErr_;
 	blitTmp_2 = &left->Sup;
 	left = 0;
 	result = blitTmp_2;
-	eqdestroy___lexer_96(&colontmpD_);
+	eqdestroy___lexer_99(&colontmpD_);
 	eqdestroy___parser_141(&left);
 	goto BeforeRet_;
 	{
 		LA1_:;
 	}
 	{
-		eqdestroy___lexer_96(&colontmpD_);
+		eqdestroy___lexer_99(&colontmpD_);
 		eqdestroy___parser_141(&left);
 	}
 	if (NIM_UNLIKELY(*nimErr_)) goto BeforeRet_;
@@ -1000,7 +1000,7 @@ NIM_BOOL* nimErr_;
 		{
 			eqdestroy___parser_184(&exp_1);
 			eqdestroy___parser_141(&idNode);
-			eqdestroy___lexer_96(&colontmpD__2);
+			eqdestroy___lexer_99(&colontmpD__2);
 			eqdestroy___system_2636((&id));
 		}
 		if (NIM_UNLIKELY(*nimErr_)) goto LA1_;
@@ -1077,7 +1077,7 @@ NIM_BOOL* nimErr_;
 			LA22_:;
 		}
 		{
-			eqdestroy___lexer_96(&colontmpD__6);
+			eqdestroy___lexer_99(&colontmpD__6);
 			eqdestroy___system_2636((&id_2));
 		}
 		if (NIM_UNLIKELY(*nimErr_)) goto LA1_;
@@ -1109,9 +1109,9 @@ appendString((&T29_), TM__jVF9a0kci0U9aAi0LWMoeYpg_50);
 		LA1_:;
 	}
 	{
-		eqdestroy___lexer_96(&colontmpD_);
+		eqdestroy___lexer_99(&colontmpD_);
 		eqdestroy___system_2636((&cmd));
-		eqdestroy___lexer_96(&token);
+		eqdestroy___lexer_99(&token);
 		eqdestroy___parser_249((&tokens_2));
 	}
 	if (NIM_UNLIKELY(*nimErr_)) goto BeforeRet_;
@@ -1200,8 +1200,8 @@ NIM_BOOL* nimErr_;
 }
 					token = &(*tokens).data.p->data[i];
 					colontmpD_ = 0;
-					eqcopy___lexer_99(&colontmpD_, (*token));
-					addLast__lexer_126((&leftover), colontmpD_);
+					eqcopy___lexer_102(&colontmpD_, (*token));
+					addLast__lexer_142((&leftover), colontmpD_);
 					if (NIM_UNLIKELY(*nimErr_)) goto LA1_;
 					{
 						tyObject_Deque__9burra9aMxNgwnm0VyV6lkzg colontmpD__2;
