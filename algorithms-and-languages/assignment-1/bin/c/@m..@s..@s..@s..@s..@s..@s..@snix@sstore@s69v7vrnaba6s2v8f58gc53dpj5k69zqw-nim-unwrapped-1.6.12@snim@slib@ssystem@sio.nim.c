@@ -105,6 +105,7 @@ N_LIB_PRIVATE N_NIMCALL(void, raiseExceptionEx)(Exception* e, NCSTRING ename, NC
 N_LIB_PRIVATE N_NIMCALL(void, eqdestroy___system_2636)(NimStringV2* dest);
 static N_INLINE(NIM_BOOL*, nimErrorFlag)(void);
 N_LIB_PRIVATE N_NOINLINE(void, raiseEOF__systemZio_123)(void);
+N_LIB_PRIVATE N_NIMCALL(NI, writeBuffer__systemZio_188)(FILE* f, void* buffer, NI len);
 static const struct {
   NI cap; NIM_CHAR data[7+1];
 } TM__MnCJ0VAmeZ9aTATUB39cx60Q_5 = { 7 | NIM_STRLIT_FLAG, "errno: " };
@@ -123,6 +124,10 @@ static const struct {
   NI cap; NIM_CHAR data[11+1];
 } TM__MnCJ0VAmeZ9aTATUB39cx60Q_24 = { 11 | NIM_STRLIT_FLAG, "EOF reached" };
 static const NimStringV2 TM__MnCJ0VAmeZ9aTATUB39cx60Q_25 = {11, (NimStrPayload*)&TM__MnCJ0VAmeZ9aTATUB39cx60Q_24};
+static const struct {
+  NI cap; NIM_CHAR data[27+1];
+} TM__MnCJ0VAmeZ9aTATUB39cx60Q_26 = { 27 | NIM_STRLIT_FLAG, "cannot write string to file" };
+static const NimStringV2 TM__MnCJ0VAmeZ9aTATUB39cx60Q_27 = {27, (NimStrPayload*)&TM__MnCJ0VAmeZ9aTATUB39cx60Q_26};
 extern NIM_BOOL nimInErrorMode__system_3487;
 static N_INLINE(NCSTRING, nimToCStringConv)(NimStringV2 s) {
 	NCSTRING result;
@@ -543,4 +548,41 @@ NIM_BOOL* nimErr_;
 	LA4_: ;
 	}BeforeRet_: ;
 	return result;
+}
+N_LIB_PRIVATE N_NIMCALL(void, flushFile__systemZio_247)(FILE* f) {
+	int T1_;
+	T1_ = (int)0;
+	T1_ = fflush(f);
+	(void)(T1_);
+}
+N_LIB_PRIVATE N_NIMCALL(NI, writeBuffer__systemZio_188)(FILE* f, void* buffer, NI len) {
+	NI result;
+	size_t T1_;
+NIM_BOOL* nimErr_;
+{nimErr_ = nimErrorFlag();
+	result = (NI)0;
+	T1_ = (size_t)0;
+	T1_ = fwrite(buffer, ((size_t) 1), ((size_t) (len)), f);
+	result = ((NI) (T1_));
+	checkErr__systemZio_153(f);
+	if (NIM_UNLIKELY(*nimErr_)) goto BeforeRet_;
+	}BeforeRet_: ;
+	return result;
+}
+N_LIB_PRIVATE N_NIMCALL(void, write__systemZio_226)(FILE* f, NimStringV2 s) {
+NIM_BOOL* nimErr_;
+{nimErr_ = nimErrorFlag();
+	{
+		NI T3_;
+		if ((s.len) < ((NI) 0) || (s.len) > ((NI) IL64(9223372036854775807))){ raiseRangeErrorI(s.len, ((NI) 0), ((NI) IL64(9223372036854775807))); goto BeforeRet_;
+}
+		T3_ = (NI)0;
+		T3_ = writeBuffer__systemZio_188(f, ((void*) (nimToCStringConv(s))), ((NI) (s.len)));
+		if (NIM_UNLIKELY(*nimErr_)) goto BeforeRet_;
+		if (!!((T3_ == s.len))) goto LA4_;
+		raiseEIO__systemZio_96(TM__MnCJ0VAmeZ9aTATUB39cx60Q_27);
+		if (NIM_UNLIKELY(*nimErr_)) goto BeforeRet_;
+	}
+	LA4_: ;
+	}BeforeRet_: ;
 }

@@ -69,8 +69,8 @@ proc visitOutput(node: Output) =
     of "printwords":
       echo "Words:"
       for word in val.split(re"[^'\w]+"):
-        # For some reason, the  regexp matches
-        # an empty string if there is a full stop.
+        # For some reason, the regexp sometimes
+        # matches an empty string.
         if word != "":
           echo word
     of "printwordcount":
@@ -88,10 +88,14 @@ proc visitKey(node: Key) =
     for id, val in pairs(symbolTable):
       echo id, ": ", val
   else: # == "exit":
-    stdout.write("Are you sure? [y/n]: ")
+    echo "\n==========================================="
+    echo "               Are you sure?               "
+    echo "===========================================\n"
     stdout.flushFile()
+    stdout.write("[y/n]: ") # echo prints line
     var input = readLine(stdin)
     while input != "y" and input != "n":
+      stdout.write("[y/n]: ")
       input = readLine(stdin)
     if input == "y": quit(0)
 

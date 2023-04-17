@@ -7,8 +7,7 @@ type
     value*: string
 
   TrackLiteral = object
-    # This is used to toggle the tokenizer
-    # depending on the state of the switch.
+    # Used to pause regex matching.
     str: string
     isOn: bool
 
@@ -51,33 +50,52 @@ proc matchToken(tokenStr: string): Token =
 
 var strBuilder = TrackLiteral(str: "", isOn: false)
 
+proc buildStr(tokenStr: string): Token =
+  #[
+    An input of `"` will toggle the string (literal) builder,
+    which will prevent calling matchToken.
+
+    Any incoming input from the tokenizer will be used to
+    build a string until another `"` is passed.
+
+    The ../src/tokenizer.nim module deals with ensuring
+    that each unescaped `"` is its own separate token.
+  ]#
+  if strBuilder.isOn and tokenStr[0] == '"':
+    strBuilder.str.add('"')
+    result = Token(kind: "literal", value: strBuilder.str)
+    strBuilder.isOn = false
+    strBuilder.str = ""
+  else:
+    strBuilder.isOn = true 
+    strBuilder.str.add(tokenStr)
+    return Token(kind: "", value: "")
+
+
+
+
 proc analyse*(str: string): Deque[Token] =
-  # Tokenizes string, appends tokens to a queue.
   # The variable 'result' is implicitly declared & returned.
   var token: Token
   for tokenStr, isSep in str.tokenize():    
+    # Tokenizes string, appends tokens to a queue.
     if strBuilder.isOn:
-      if tokenStr[0] == '"':
-        strBuilder.str.add('"')
-        result.addLast(Token(kind: "literal", value: strBuilder.str))
-        strBuilder.isOn = false
-        strBuilder.str = ""
-        if tokenStr.len > 1:
-          token = matchToken(tokenStr[1..tokenStr.len])
-          result.addLast(token)
-      else:
-        strBuilder.str.add(tokenStr)
+      # Continue building string
+      token = buildStr(tokenstr)
+      if not strBuilder.isOn:
+        # String builder is finished.
+        result.addLast(token)
+      continue
+    if tokenStr[0] == '"':
+      # Start building string, ignore first output
+      discard buildStr(tokenstr) 
 
-    elif tokenStr[0] == '"': # 'str[^1]' indexes last char.
-      # will build a string literal until
-      # an unescaped '<">' is encountered.
-      strBuilder.isOn = true
-      strBuilder.str.add(tokenStr)
-
-    elif isSep: continue # Ignore whitespace.
+    elif isSep: continue # Ignore whitespace
 
     else:
       token = matchToken(tokenStr)
       if token.kind == "":
-        raise newException(ValueError, "Invalid token: \"" & tokenStr & "\"")
+        raise newException(ValueError,
+                          "Invalid token: \"" &
+                          tokenStr & "\"")
       result.addLast(token)
