@@ -1,7 +1,4 @@
 #[
-  Morales, Laurens
-  21011877 | Assignment number, 159.341
-  
   The program is an interpreter that will take user
   input and interpret it according to the grammar.
 
@@ -29,8 +26,7 @@ import deques
 
 echo """
 ----------------------------------------
- 159.341 2023 Semester 1 | Assignment 1
- Submitted by Laurens Morales, 21011877
+github.com/lauvrens
 ----------------------------------------
 """
 
