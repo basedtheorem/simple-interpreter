@@ -73,7 +73,7 @@ proc visitOutput(node: Output) =
           echo word
     of "printwordcount":
       let words = val.split(re"[^'\w]+")
-      var len = val.len()
+      var len = words.len()
 
       # Empty strings can occur at either ends.
       if words[0] == "":
