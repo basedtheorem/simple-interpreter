@@ -1,4 +1,7 @@
-- [ ] TODO: Documentation
+TODO:
+
+- [ ] Documentation
+- [ ] Fix: crashes on printwordcount when sent. == ""
 
 #### Stats
 
